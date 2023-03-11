@@ -14,5 +14,9 @@
   {
     "name": "Npgsql.EntityFrameworkCore.PostgreSQL",
     "version": "7.0.3"
+  },
+  {
+    "name": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+    "version": "7.0.3"
   }
 ]

@@ -1,4 +1,5 @@
 using dev_processes_backend;
+using dev_processes_backend.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

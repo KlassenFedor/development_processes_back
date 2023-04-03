@@ -8,4 +8,5 @@ public class Student : User
     
     public ICollection<VacancyPriority> VacancyPriorities { get; set; }
     public ICollection<Practice> Practices { get; set; }
+    public ICollection<Interview> Interviews { get; set; }
 }

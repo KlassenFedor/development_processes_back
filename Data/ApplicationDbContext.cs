@@ -66,7 +66,13 @@ namespace dev_processes_backend.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            builder.Entity<Vacancy>().HasQueryFilter(v => !v.IsDeleted);
+            builder.Entity<Vacancy>(e =>
+            {
+                e.HasQueryFilter(v => !v.IsDeleted);
+                e.HasOne(v => v.Company)
+                    .WithMany(c => c.Vacancies)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
             
             builder.Entity<VacancyPriority>().HasQueryFilter(vp => !vp.Vacancy.IsDeleted);
         }

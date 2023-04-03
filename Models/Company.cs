@@ -7,7 +7,7 @@ public class Company
     public string Site { get; set; }
     public string Information { get; set; }
     
-    public Guid LogoId { get; set; }
-    public File Logo { get; set; }
+    public Guid? LogoId { get; set; }
+    public File? Logo { get; set; }
     public ICollection<Vacancy> Vacancies { get; set; }
 }

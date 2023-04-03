@@ -12,8 +12,8 @@ using dev_processes_backend.Data;
 namespace dev_processes_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230402175301_StoreStudyYearAsIntForDownloadableDocuments")]
-    partial class StoreStudyYearAsIntForDownloadableDocuments
+    [Migration("20230403155409_AllEntities")]
+    partial class AllEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,10 +171,18 @@ namespace dev_processes_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.HasIndex("VacancyId");
 
@@ -189,9 +197,6 @@ namespace dev_processes_backend.Migrations
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("InterviewId")
                         .HasColumnType("uuid");
@@ -558,11 +563,19 @@ namespace dev_processes_backend.Migrations
 
             modelBuilder.Entity("dev_processes_backend.Models.Interview", b =>
                 {
+                    b.HasOne("dev_processes_backend.Models.Student", "Student")
+                        .WithMany("Interviews")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dev_processes_backend.Models.Vacancy", "Vacancy")
                         .WithMany()
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Student");
 
                     b.Navigation("Vacancy");
                 });
@@ -686,6 +699,8 @@ namespace dev_processes_backend.Migrations
 
             modelBuilder.Entity("dev_processes_backend.Models.Student", b =>
                 {
+                    b.Navigation("Interviews");
+
                     b.Navigation("Practices");
 
                     b.Navigation("VacancyPriorities");

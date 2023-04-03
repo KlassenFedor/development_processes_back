@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace dev_processes_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAllEntities : Migration
+    public partial class AllEntities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -82,7 +82,7 @@ namespace dev_processes_backend.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Site = table.Column<string>(type: "text", nullable: false),
                     Information = table.Column<string>(type: "text", nullable: false),
-                    LogoId = table.Column<Guid>(type: "uuid", nullable: false)
+                    LogoId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,7 +100,7 @@ namespace dev_processes_backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StudyYearStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StudyYearStart = table.Column<int>(type: "integer", nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: false),
                     FileId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -120,7 +120,7 @@ namespace dev_processes_backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StudyYearStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StudyYearStart = table.Column<int>(type: "integer", nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: false),
                     FileId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -288,9 +288,9 @@ namespace dev_processes_backend.Migrations
                     EstimatedNumberToHire = table.Column<string>(type: "text", nullable: false),
                     AppliableForDateStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AppliableForDateEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Position = table.Column<int>(type: "integer", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -299,7 +299,8 @@ namespace dev_processes_backend.Migrations
                         name: "FK_Vacancies_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -307,11 +308,19 @@ namespace dev_processes_backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    VacancyId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    VacancyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StudentId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Interviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Interviews_Users_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Interviews_Vacancies_VacancyId",
                         column: x => x.VacancyId,
@@ -351,7 +360,6 @@ namespace dev_processes_backend.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     InterviewId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -385,6 +393,11 @@ namespace dev_processes_backend.Migrations
                 table: "Companies",
                 column: "LogoId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Interviews_StudentId",
+                table: "Interviews",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Interviews_VacancyId",

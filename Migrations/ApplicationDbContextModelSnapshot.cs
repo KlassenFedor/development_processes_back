@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using dev_processes_backend.Data;
@@ -12,11 +11,9 @@ using dev_processes_backend.Data;
 namespace dev_processes_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230402124645_AllowNullLogoForCompanies")]
-    partial class AllowNullLogoForCompanies
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,10 +168,18 @@ namespace dev_processes_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.HasIndex("VacancyId");
 
@@ -189,9 +194,6 @@ namespace dev_processes_backend.Migrations
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("InterviewId")
                         .HasColumnType("uuid");
@@ -255,8 +257,8 @@ namespace dev_processes_backend.Migrations
                     b.Property<Guid>("FileId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("StudyYearStart")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("StudyYearStart")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Version")
                         .HasColumnType("integer");
@@ -277,8 +279,8 @@ namespace dev_processes_backend.Migrations
                     b.Property<Guid>("FileId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("StudyYearStart")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("StudyYearStart")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Version")
                         .HasColumnType("integer");
@@ -441,7 +443,7 @@ namespace dev_processes_backend.Migrations
                     b.Property<DateTime>("AppliableForDateStart")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
@@ -558,11 +560,19 @@ namespace dev_processes_backend.Migrations
 
             modelBuilder.Entity("dev_processes_backend.Models.Interview", b =>
                 {
+                    b.HasOne("dev_processes_backend.Models.Student", "Student")
+                        .WithMany("Interviews")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dev_processes_backend.Models.Vacancy", "Vacancy")
                         .WithMany()
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Student");
 
                     b.Navigation("Vacancy");
                 });
@@ -640,9 +650,13 @@ namespace dev_processes_backend.Migrations
 
             modelBuilder.Entity("dev_processes_backend.Models.Vacancy", b =>
                 {
-                    b.HasOne("dev_processes_backend.Models.Company", null)
+                    b.HasOne("dev_processes_backend.Models.Company", "Company")
                         .WithMany("Vacancies")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("dev_processes_backend.Models.VacancyPriority", b =>
@@ -682,6 +696,8 @@ namespace dev_processes_backend.Migrations
 
             modelBuilder.Entity("dev_processes_backend.Models.Student", b =>
                 {
+                    b.Navigation("Interviews");
+
                     b.Navigation("Practices");
 
                     b.Navigation("VacancyPriorities");

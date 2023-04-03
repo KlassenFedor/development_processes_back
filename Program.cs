@@ -12,6 +12,7 @@ builder.Services.AddScoped<VacanciesService>();
 builder.Services.AddScoped<DownloadableDocumentsService>();
 builder.Services.AddScoped<InterviewsService>();
 builder.Services.AddScoped<PracticesService>();
+builder.Services.AddScoped<UsersService>();
 
 #endregion
 

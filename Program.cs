@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<FilesService>();
 builder.Services.AddScoped<CompaniesService>();
 builder.Services.AddScoped<VacanciesService>();
+builder.Services.AddScoped<DownloadableDocumentsService>();
 
 #endregion
 

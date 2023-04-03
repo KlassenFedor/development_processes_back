@@ -10,6 +10,7 @@ builder.Services.AddScoped<FilesService>();
 builder.Services.AddScoped<CompaniesService>();
 builder.Services.AddScoped<VacanciesService>();
 builder.Services.AddScoped<DownloadableDocumentsService>();
+builder.Services.AddScoped<InterviewsService>();
 
 #endregion
 

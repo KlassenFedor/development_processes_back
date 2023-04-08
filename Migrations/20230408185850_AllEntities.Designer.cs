@@ -12,7 +12,7 @@ using dev_processes_backend.Data;
 namespace dev_processes_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230403155409_AllEntities")]
+    [Migration("20230408185850_AllEntities")]
     partial class AllEntities
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace dev_processes_backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -398,6 +398,9 @@ namespace dev_processes_backend.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

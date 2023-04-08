@@ -50,8 +50,12 @@ namespace dev_processes_backend.Data
             builder.Entity<Interview>().HasQueryFilter(i => !i.Vacancy.IsDeleted);
             
             builder.Entity<Role>().ToTable("Roles");
-            
-            builder.Entity<User>().ToTable("Users");
+
+            builder.Entity<User>(e =>
+            {
+                e.ToTable("Users");
+                e.HasIndex(x => x.Email).IsUnique();
+            });
             
             builder.Entity<UserRole>(e =>
             {

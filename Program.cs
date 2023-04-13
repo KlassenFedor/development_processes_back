@@ -1,6 +1,7 @@
 using dev_processes_backend.Data;
 using dev_processes_backend.Models;
 using dev_processes_backend.Services;
+using dev_processes_backend.StartConfiguration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,15 +24,18 @@ builder.Services.AddSwaggerGen();
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
 
-builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager<SignInManager<User>>()
-    .AddUserManager<UserManager<User>>();
+    .AddUserManager<UserManager<User>>()
+    .AddRoleManager<RoleManager<Role>>();
 
 var app = builder.Build();
 
 using var serviceScope = app.Services.CreateScope();
 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+
+await app.ConfigureIdentityAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

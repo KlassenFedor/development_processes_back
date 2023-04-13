@@ -1,4 +1,5 @@
-﻿using dev_processes_backend.Models.Dtos.Auth;
+﻿using dev_processes_backend.Models;
+using dev_processes_backend.Models.Dtos.Auth;
 using dev_processes_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,8 +21,9 @@ namespace dev_processes_backend.Controllers
             _logger = logger;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        [Authorize(Roles = RolesNames.SuperAdministrator)]
+        [HttpPost("register/admin")]
+        public async Task<IActionResult> RegisterAdmin(RegisterAdminRequest model)
         {
             if (!ModelState.IsValid)
             {
@@ -29,7 +31,26 @@ namespace dev_processes_backend.Controllers
             }
             try
             {
-                await _authService.Register(model);
+                await _authService.RegisterAdmin(model);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest("Incorrect data");
+            }
+        }
+
+        [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+        [HttpPost("register/student")]
+        public async Task<IActionResult> RegisterStudent(RegisterStudentRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return StatusCode(400, "Invalid input data.");
+            }
+            try
+            {
+                await _authService.RegisterStudent(model);
                 return Ok();
             }
             catch

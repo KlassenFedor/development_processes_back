@@ -6,22 +6,16 @@ using System.Security.Claims;
 
 namespace dev_processes_backend.Services
 {
-    public interface IAuthService
-    {
-        Task RegisterAdmin(RegisterAdminRequest model);
-        Task RegisterStudent(RegisterStudentRequest model);
-        Task Login(LoginRequest model);
-        Task Logout();
-    }
-    public class AuthService : IAuthService
+    public class AuthService : BaseService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AuthService> _logger;
 
-        public AuthService(UserManager<User> userManager,
-                SignInManager<User> signInManager,
-                ILogger<AuthService> logger)
+        public AuthService(IServiceProvider serviceProvider,
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            ILogger<AuthService> logger) : base(serviceProvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;

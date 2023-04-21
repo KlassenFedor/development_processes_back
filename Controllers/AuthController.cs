@@ -2,22 +2,18 @@
 using dev_processes_backend.Models.Dtos.Auth;
 using dev_processes_backend.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 
 namespace dev_processes_backend.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
-        private IAuthService _authService;
+        private readonly AuthService _authService;
         private readonly ILogger _logger;
 
-        public AuthController(IAuthService service, ILogger<AuthController> logger)
+        public AuthController(IServiceProvider serviceProvider, ILogger<AuthController> logger) : base(serviceProvider)
         {
-            _authService = service;
+            _authService = serviceProvider.GetRequiredService<AuthService>();
             _logger = logger;
         }
 

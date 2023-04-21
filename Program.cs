@@ -14,7 +14,7 @@ builder.Services.AddScoped<DownloadableDocumentsService>();
 builder.Services.AddScoped<InterviewsService>();
 builder.Services.AddScoped<PracticesService>();
 builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

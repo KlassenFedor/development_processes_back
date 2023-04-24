@@ -1,7 +1,9 @@
-﻿using dev_processes_backend.Models;
+﻿using dev_processes_backend.Exceptions;
+using dev_processes_backend.Models;
 using dev_processes_backend.Models.Dtos.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace dev_processes_backend.Services
@@ -56,6 +58,25 @@ namespace dev_processes_backend.Services
             await _signInManager.SignOutAsync();
         }
 
+        public async Task<IList<string>> GetUserRole(Guid? userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user != null)
+                {
+                    var userRole = await _userManager.GetRolesAsync(user);
+                    return userRole;
+                }
+                throw new EntityNotFoundException();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Can not find user with userdId: " + userId.ToString() + " " + "error: " + ex.Message);
+                throw new Exception();
+            }
+        }
+
         private async Task Register(RegisterRequest model)
         {
             var user = new User
@@ -96,7 +117,7 @@ namespace dev_processes_backend.Services
             if (!result.Succeeded)
             {
                 _logger.LogError(result.Errors.First().Description);
-                throw new ArgumentException("We can not register this admin");
+                throw new ArgumentException("We can not add admin role to this user");
             }
             await _signInManager.SignInAsync(user, false);
             return;

@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = SameSiteMode.None;
+});
+
 builder.Services.AddScoped<FilesService>();
 builder.Services.AddScoped<CompaniesService>();
 builder.Services.AddScoped<VacanciesService>();
@@ -17,6 +21,7 @@ builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllers();
+builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -33,19 +38,24 @@ builder.Services.AddIdentity<User, Role>()
 var app = builder.Build();
 
 using var serviceScope = app.Services.CreateScope();
-var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>(); 
+app.UseCors(builder => builder
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin()
+        .WithOrigins("http://localhost:3001") // http://localhost:3000 где запущен фронт
+        .AllowCredentials());
+
 
 await app.ConfigureIdentityAsync();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if(app.Environment.IsDevelopment()){
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

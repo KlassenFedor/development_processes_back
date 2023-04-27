@@ -29,8 +29,8 @@ namespace dev_processes_backend.Controllers
             }
             try
             {
-                await _authService.RegisterAdmin(model);
-                return Ok();
+                var result = await _authService.RegisterAdmin(model);
+                return Ok(result);
             }
             catch
             {
@@ -78,8 +78,8 @@ namespace dev_processes_backend.Controllers
             }
             try
             {
-                await _authService.RegisterStudent(model);
-                return Ok();
+                var result = await _authService.RegisterStudent(model);
+                return Ok(result);
             }
             catch
             {

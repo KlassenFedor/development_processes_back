@@ -96,7 +96,7 @@ namespace dev_processes_backend.Services
             throw new ArgumentException("We can not register this user");
         }
 
-        public async Task RegisterAdmin(RegisterAdminRequest model)
+        public async Task<Guid> RegisterAdmin(RegisterAdminRequest model)
         {
             var user = new User
             {
@@ -119,11 +119,10 @@ namespace dev_processes_backend.Services
                 _logger.LogError(result.Errors.First().Description);
                 throw new ArgumentException("We can not add admin role to this user");
             }
-            await _signInManager.SignInAsync(user, false);
-            return;
+            return user.Id;
         }
 
-        public async Task RegisterStudent(RegisterStudentRequest model)
+        public async Task<Guid> RegisterStudent(RegisterStudentRequest model)
         {
             var user = new Student
             {
@@ -142,8 +141,7 @@ namespace dev_processes_backend.Services
             {
                 throw new ArgumentException("We can not register this user");
             }
-            await _signInManager.SignInAsync(user, false);
-            return;
+            return user.Id;
         }
     }
 }

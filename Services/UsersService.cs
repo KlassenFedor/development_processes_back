@@ -1,5 +1,6 @@
 ﻿using dev_processes_backend.Exceptions;
 using dev_processes_backend.Models;
+using dev_processes_backend.Models.Dtos.Users.ResponseModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace dev_processes_backend.Services;
@@ -63,5 +64,25 @@ public class UsersService : BaseService
         {
             throw new EntityNotFoundException();
         }
+    }
+    
+    public async Task<List<GetAdminsElementResponseModel>> GetAdminsAsync()
+    {
+        var admins = await ApplicationDbContext.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .Where(u => u.UserRoles.Any(ur => ur.Role.Type == RoleType.Admin))
+            .ToListAsync();
+        
+        return admins.Select(u => new GetAdminsElementResponseModel
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Patronymic = u.Patronymic,
+            Email = u.Email,
+            CreateDateTime = u.UserRoles.Single(ur => ur.Role.Type == RoleType.Admin).CreateDateTime,
+            IsActive = !u.UserRoles.Single(ur => ur.Role.Type == RoleType.Admin).IsDeleted
+        }).ToList();
     }
 }

@@ -98,8 +98,14 @@ namespace dev_processes_backend.Data
         {
             foreach (var entry in ChangeTracker.Entries())
             {
+                var now = DateTime.UtcNow;
                 switch (entry.State)
                 {
+                    // Write creation date
+                    case EntityState.Added when entry.Entity is ISoftDeletableEntity:
+                        entry.Property(nameof(ISoftDeletableEntity.CreateDateTime)).CurrentValue = now;
+                        break;
+
                     // Soft delete entity
                     case EntityState.Deleted when entry.Entity is ISoftDeletableEntity:
                         entry.State = EntityState.Unchanged;

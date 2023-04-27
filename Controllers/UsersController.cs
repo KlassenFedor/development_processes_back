@@ -1,5 +1,7 @@
 ﻿using dev_processes_backend.Exceptions;
+using dev_processes_backend.Models;
 using dev_processes_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dev_processes_backend.Controllers;
@@ -36,6 +38,20 @@ public class UsersController : BaseController
         {
             await _usersService.UnblockAdminAsync(id);
             return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
+    [Authorize(Roles = RolesNames.SuperAdministrator)]
+    [HttpGet("admins")]
+    public async Task<IActionResult> GetAdmins()
+    {
+        try
+        {
+            return Ok(await _usersService.GetAdminsAsync());
         }
         catch (EntityNotFoundException)
         {

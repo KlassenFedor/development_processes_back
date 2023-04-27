@@ -8,6 +8,7 @@ public class UserRole : IdentityUserRole<Guid>, ISoftDeletableEntity
     
     public User User { get; set; }
     public Role Role { get; set; }
-    
+
+    public DateTime CreateDateTime { get; set; }
     public bool IsDeleted { get; set; } 
 }

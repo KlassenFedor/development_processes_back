@@ -39,6 +39,8 @@ var app = builder.Build();
 
 using var serviceScope = app.Services.CreateScope();
 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>(); 
+// auto migration
+context?.Database.Migrate();
 app.UseCors(builder => builder
         .AllowAnyHeader()
         .AllowAnyMethod()

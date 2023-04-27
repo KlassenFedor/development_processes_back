@@ -11,6 +11,7 @@ public class Vacancy : ISoftDeletableEntity
     
     public Company Company { get; set; }
     public Position Position { get; set; }
-    
+
+    public DateTime CreateDateTime { get; set; }
     public bool IsDeleted { get; set; }
 }

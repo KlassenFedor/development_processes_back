@@ -1,12 +1,13 @@
 ﻿using dev_processes_backend.Exceptions;
+using dev_processes_backend.Models;
 using dev_processes_backend.Models.Dtos.Companies.RequestModels;
 using dev_processes_backend.Services;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dev_processes_backend.Controllers;
 
-// TODO allow for only admins and superadmins
+[Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
 public class CompaniesController : BaseController
 {
     private readonly CompaniesService _companiesService;

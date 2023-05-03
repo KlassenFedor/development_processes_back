@@ -19,7 +19,7 @@ public class UsersController : BaseController
         _usersService = serviceProvider.GetRequiredService<UsersService>();
     }
     
-    // TODO allow for only superadmins
+    [Authorize(Roles = RolesNames.SuperAdministrator)]
     [HttpPatch("{id:guid}/block_admin")]
     public async Task<IActionResult> BlockAdmin(Guid? id)
     {
@@ -34,7 +34,7 @@ public class UsersController : BaseController
         }
     }
     
-    // TODO allow for only superadmins
+    [Authorize(Roles = RolesNames.SuperAdministrator)]
     [HttpPatch("{id:guid}/unblock_admin")]
     public async Task<IActionResult> UnblockAdmin(Guid? id)
     {

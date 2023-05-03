@@ -1,4 +1,5 @@
-﻿using dev_processes_backend.Exceptions;
+﻿using System.Security.Claims;
+using dev_processes_backend.Exceptions;
 using dev_processes_backend.Models;
 using dev_processes_backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -8,10 +9,13 @@ namespace dev_processes_backend.Controllers;
 
 public class UsersController : BaseController
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UsersService _usersService;
     
-    public UsersController(IServiceProvider serviceProvider) : base(serviceProvider)
+    public UsersController(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor) : base(
+        serviceProvider)
     {
+        _httpContextAccessor = httpContextAccessor;
         _usersService = serviceProvider.GetRequiredService<UsersService>();
     }
     
@@ -58,4 +62,30 @@ public class UsersController : BaseController
             return NotFound();
         }
     }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid? id)
+    {
+        var requesterIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (requesterIdClaim == null)
+        {
+            return Forbid();
+        }
+        try
+        {
+            await _usersService.DeleteUserAsync(id, new Guid(requesterIdClaim!.Value));
+            return Ok();
+        }
+        catch (NoAccessException)
+        {
+            Console.WriteLine("FORBIDDING");
+            return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
 }

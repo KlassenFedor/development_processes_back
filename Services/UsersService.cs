@@ -85,4 +85,40 @@ public class UsersService : BaseService
             IsActive = !u.UserRoles.Single(ur => ur.Role.Type == RoleType.Admin).IsDeleted
         }).ToList();
     }
+
+    public async Task DeleteUserAsync(Guid? userId, Guid requesterId)
+    {
+        if (userId == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var user = await ApplicationDbContext.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        // must exist according to the Authorize attribute on the controller,
+        // so the requester is either an admin or a superadmin
+        var requesterRoles = ApplicationDbContext.Roles
+            .Include(r => r.UserRoles)
+            .ThenInclude(ur => ur.User)
+            .Where(r => r.UserRoles.Any(ur => ur.UserId == requesterId));
+        foreach (var requesterRole in requesterRoles)
+        {
+            Console.WriteLine($"ROLES HERE {requesterRole.Type}");    
+        }
+        
+        // the requester is an admin and the user is either an admin or a superadmin
+        if (requesterRoles.All(rr => rr.Type == RoleType.Admin) && user.UserRoles.Any())
+        {
+            Console.WriteLine("EXC HERE");
+            throw new NoAccessException();
+        }
+
+        ApplicationDbContext.Users.Remove(user);
+        await ApplicationDbContext.SaveChangesAsync();
+    }
 }

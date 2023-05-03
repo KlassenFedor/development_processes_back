@@ -28,7 +28,6 @@ public class UsersService : BaseService
         if (userRole != null)
         {
             ApplicationDbContext.UserRoles.Remove(userRole);
-            ApplicationDbContext.UserRoles.Update(userRole);
             await ApplicationDbContext.SaveChangesAsync();
         }
         else
@@ -57,7 +56,6 @@ public class UsersService : BaseService
         {
             userRole.IsDeleted = false;
             ApplicationDbContext.UserRoles.Update(userRole);
-            // TODO возможно также потребуется вручную обновить состояние юзерроли в контексте, если возникнет странное поведение
             await ApplicationDbContext.SaveChangesAsync();
         }
         else

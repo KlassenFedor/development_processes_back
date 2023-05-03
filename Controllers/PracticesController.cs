@@ -1,6 +1,8 @@
 ﻿using dev_processes_backend.Exceptions;
+using dev_processes_backend.Models;
 using dev_processes_backend.Models.Dtos.Practices.RequestModels;
 using dev_processes_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dev_processes_backend.Controllers;
@@ -14,7 +16,7 @@ public class PracticesController : BaseController
         _practicesService = serviceProvider.GetRequiredService<PracticesService>();
     }
     
-    // TODO allow for only admins and superadmins
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPost("{id:guid}/characterization")]
     public async Task<IActionResult> Characterization(Guid? id, AddPracticeCharacterizationRequestModel model)
     {
@@ -29,7 +31,7 @@ public class PracticesController : BaseController
         }
     }
     
-    // TODO allow for only admins and superadmins
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPatch("{id:guid}/characterization/{mark:int}")]
     public async Task<IActionResult> Characterization(Guid? id, int mark)
     {

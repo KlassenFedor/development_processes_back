@@ -72,6 +72,8 @@ namespace dev_processes_backend.Services
             student.Group = editModel.Group != null && editModel.Group != "" ? editModel.Group : student.Group;
             student.Course = (int)(editModel.Course != null ? editModel.Course : student.Course);
             student.EducationalTrack = (Models.EducationalTrack)(editModel.EducationalTrack != null ? editModel.EducationalTrack : student.EducationalTrack);
+
+            await ApplicationDbContext.SaveChangesAsync();
         }
     }
 }

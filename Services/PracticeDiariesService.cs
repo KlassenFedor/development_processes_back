@@ -6,9 +6,9 @@ namespace dev_processes_backend.Services
     {
         public PracticeDiariesService(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
-        public async Task AddPracticeDiary(Guid practiceId, AddPracticeDiaryRequest file)
-        {
-            var 
-        }
+        //public async Task AddPracticeDiary(Guid practiceId, AddPracticeDiaryRequest file)
+        //{
+        //    var 
+        //}
     }
 }

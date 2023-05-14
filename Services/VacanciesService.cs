@@ -97,4 +97,24 @@ public class VacanciesService : BaseService
         ApplicationDbContext.Vacancies.Remove(vacancy);
         await ApplicationDbContext.SaveChangesAsync();
     }
+
+    public async Task<List<GetVacanciesElementResponseModel>> GetCompanyVacancies(Guid companyId)
+    {
+        var result = await ApplicationDbContext.Vacancies
+            .Include(v => v.Company)
+            .Where(v => v.Company.Id == companyId)
+            .Select(v => new GetVacanciesElementResponseModel 
+            {
+                Id = v.Id,
+                CompanyId = v.Company.Id,
+                Stack = v.Stack,
+                Description = v.Description,
+                EstimatedNumberToHire = v.EstimatedNumberToHire,
+                AppliableForDateStart = v.AppliableForDateStart,
+                AppliableForDateEnd = v.AppliableForDateEnd,
+                Position = v.Position
+            }).ToListAsync();
+
+        return result;
+    }
 }

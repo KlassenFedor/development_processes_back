@@ -19,6 +19,7 @@ builder.Services.AddScoped<InterviewsService>();
 builder.Services.AddScoped<PracticesService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<StudentsService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors();

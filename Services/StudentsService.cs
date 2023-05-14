@@ -1,6 +1,6 @@
 ﻿using dev_processes_backend.Exceptions;
 using dev_processes_backend.Models.Dtos.Users.RequestModels;
-using dev_processes_backend.Models.Dtos.Users.ResponseModel;
+using dev_processes_backend.Models.Dtos.Users.ResponseModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace dev_processes_backend.Services

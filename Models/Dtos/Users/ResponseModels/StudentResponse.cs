@@ -1,4 +1,4 @@
-﻿namespace dev_processes_backend.Models.Dtos.Users.ResponseModel
+﻿namespace dev_processes_backend.Models.Dtos.Users.ResponseModels
 {
     public class StudentResponse
     {

@@ -20,6 +20,7 @@ builder.Services.AddScoped<PracticesService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<StudentsService>();
+builder.Services.AddScoped<VacanciesPrioritiesService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors();

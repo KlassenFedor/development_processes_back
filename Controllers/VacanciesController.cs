@@ -4,6 +4,7 @@ using dev_processes_backend.Models.Dtos.Vacancies.RequestModels;
 using dev_processes_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace dev_processes_backend.Controllers;
 
@@ -11,10 +12,12 @@ namespace dev_processes_backend.Controllers;
 public class VacanciesController : BaseController
 {
     private readonly VacanciesService _vacanciesService;
-    
+    private readonly VacanciesPrioritiesService _vacanciesPrioritiesService;
+
     public VacanciesController(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _vacanciesService = serviceProvider.GetRequiredService<VacanciesService>();
+        _vacanciesPrioritiesService = serviceProvider.GetRequiredService<VacanciesPrioritiesService>();
     }
     
     [HttpGet]
@@ -81,6 +84,20 @@ public class VacanciesController : BaseController
         catch (EntityNotFoundException)
         {
             return NotFound();
+        }
+    }
+
+    [HttpPost("addVacancy/student/{studentId:guid}/vacancy/{vacancyId:guid}")]
+    public async Task<IActionResult> AddVacancyToStudentList(Guid studentId, Guid vacancyId)
+    {
+        try
+        {
+            await _vacanciesPrioritiesService.AddVacancyToStudentsPrioritiesList(vacancyId, studentId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Unable to add vacancy to students list");
         }
     }
 }

@@ -75,5 +75,20 @@ namespace dev_processes_backend.Services
 
             await ApplicationDbContext.SaveChangesAsync();
         }
+
+        public async Task<List<StudentResponse>> GetAllStudents()
+        {
+            var students = await ApplicationDbContext.Students.ToListAsync();
+            return students.Select(s => new StudentResponse
+            {
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                Patronymic = s.Patronymic,
+                Email = s.Email,
+                Course = s.Course,
+                Group = s.Group,
+                EducationalTrack = s.EducationalTrack
+            }).ToList();
+        }
     }
 }

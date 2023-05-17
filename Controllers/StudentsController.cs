@@ -75,5 +75,20 @@ namespace dev_processes_backend.Controllers
                 return BadRequest("Error during student update.");
             }
         }
+
+        [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllStudents()
+        {
+            try
+            {
+                var result = await _studentsService.GetAllStudents();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error during student update.");
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ namespace dev_processes_backend.Services
                 throw new EntityNotFoundException();
             }
             return new StudentResponse {
+                Id = studentId,
                 FirstName = student.FirstName,
                 LastName = student.LastName,
                 Patronymic = student.Patronymic,
@@ -32,6 +33,7 @@ namespace dev_processes_backend.Services
             var students = await ApplicationDbContext.Students.Where(s => s.Course == course).ToListAsync();
             return students.Select(s => new StudentResponse
             {
+                Id = s.Id,
                 FirstName = s.FirstName,
                 LastName = s.LastName,
                 Patronymic = s.Patronymic,
@@ -47,6 +49,7 @@ namespace dev_processes_backend.Services
             var students = await ApplicationDbContext.Students.Where(s => s.Group == group).ToListAsync();
             return students.Select(s => new StudentResponse
             {
+                Id = s.Id,
                 FirstName = s.FirstName,
                 LastName = s.LastName,
                 Patronymic = s.Patronymic,
@@ -81,6 +84,7 @@ namespace dev_processes_backend.Services
             var students = await ApplicationDbContext.Students.ToListAsync();
             return students.Select(s => new StudentResponse
             {
+                Id = s.Id,
                 FirstName = s.FirstName,
                 LastName = s.LastName,
                 Patronymic = s.Patronymic,

@@ -1,5 +1,6 @@
 ﻿using dev_processes_backend.Exceptions;
 using dev_processes_backend.Models;
+using dev_processes_backend.Models.Dtos.Interviews;
 using dev_processes_backend.Models.Dtos.Interviews.InterviewRequest;
 using dev_processes_backend.Models.Dtos.Interviews.InterviewResponse;
 using Microsoft.AspNetCore.Connections.Features;
@@ -41,6 +42,7 @@ public class InterviewsService : BaseService
     public async Task<Guid> CreateInterview(NewInterviewRequest newInterviewRequest)
     {
         var newInterview = new Interview();
+        newInterview.History = new List<InterviewState>();
         newInterview.Description = newInterviewRequest.Description;
 
         var student  = await ApplicationDbContext.Students.FirstOrDefaultAsync(s => s.Id == newInterviewRequest.StudentId);
@@ -55,30 +57,45 @@ public class InterviewsService : BaseService
         {
             throw new EntityNotFoundException();
         }
+
         newInterview.Vacancy = vacancy;
+
+        var interviewState = new InterviewState
+        {
+            DateTime = newInterviewRequest.InterviewState.DateTime,
+            Status = newInterviewRequest.InterviewState.Status
+        };
+
+        await ApplicationDbContext.Interviews.AddAsync(newInterview);
 
         if (newInterviewRequest.InterviewState != null)
         {
-            newInterview.History.Add(newInterviewRequest.InterviewState);
+            newInterview.History.Add(interviewState);
         }
 
         await ApplicationDbContext.SaveChangesAsync();
+
         return newInterview.Id;
     }
 
     public async Task<InterviewResponse> GetInterview(Guid interviewId)
     {
-        var interview = await ApplicationDbContext.Interviews.Select(i => new InterviewResponse
-        {
-            Id = i.Id,
-            Description = i.Description,
-            Vacancy = i.Vacancy,
-            History = i.History,
-            Student = i.Student
-        })
+        var interview = await ApplicationDbContext.Interviews
             .Include(i => i.Vacancy)
             .Include(i => i.Student)
+            .Select(i => new InterviewResponse 
+            {
+                Id = i.Id,
+                Description = i.Description,
+                VacancyId = i.Vacancy.Id,
+                History = i.History,
+                StudentId = i.Student.Id
+            })
             .FirstOrDefaultAsync(i => i.Id == interviewId);
+        if (interview == null)
+        {
+            throw new EntityNotFoundException();
+        }
 
         return interview;
     }
@@ -86,17 +103,17 @@ public class InterviewsService : BaseService
     public async Task<List<InterviewResponse>> GetStudentInterviews(Guid studentId)
     {
         var interviews = await ApplicationDbContext.Interviews
+            .Include(i => i.Vacancy)
+            .Include(i => i.Student)
             .Where(i => i.Student.Id == studentId)
             .Select(i => new InterviewResponse
             {
                 Id = i.Id,
                 Description = i.Description,
-                Vacancy = i.Vacancy,
+                VacancyId = i.Vacancy.Id,
                 History = i.History,
-                Student = i.Student
+                StudentId = i.Student.Id
             })
-            .Include(i => i.Vacancy)
-            .Include(i => i.Student)
             .ToListAsync();
 
         return interviews;
@@ -104,15 +121,32 @@ public class InterviewsService : BaseService
 
     public async Task DeleteInterview(Guid interviewId)
     {
-        var interview = await ApplicationDbContext.Interviews.Where(i => i.Id == interviewId).FirstOrDefaultAsync();
+        var interview = await ApplicationDbContext.Interviews
+            .Include(i => i.History)
+            .Where(i => i.Id == interviewId).FirstOrDefaultAsync();
+        if (interview == null)
+        {
+            throw new EntityNotFoundException();
+        }
         ApplicationDbContext.Interviews.Remove(interview);
         await ApplicationDbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateInterview(Guid interviewId, InterviewState newInterviewState)
+    public async Task<Guid> UpdateInterview(Guid interviewId, InterviewStateRequest newInterviewState)
     {
-        var interview = await ApplicationDbContext.Interviews.Where(i => i.Id == interviewId).FirstOrDefaultAsync();
-        interview.History.Add(newInterviewState);
+        var interview = await ApplicationDbContext.Interviews.Include(i => i.History).Where(i => i.Id == interviewId).FirstOrDefaultAsync();
+        var interviewState = new InterviewState
+        {
+            DateTime = newInterviewState.DateTime,
+            Status = newInterviewState.Status
+        };
+        if (interview == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        interview.History.Add(interviewState);
         await ApplicationDbContext.SaveChangesAsync();
+
+        return interviewId;
     }
 }

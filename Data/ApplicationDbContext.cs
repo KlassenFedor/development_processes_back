@@ -47,7 +47,8 @@ namespace dev_processes_backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            builder.Entity<Interview>().HasQueryFilter(i => !i.Vacancy.IsDeleted);
+            builder.Entity<Interview>()
+                .HasQueryFilter(i => !i.Vacancy.IsDeleted);
             
             builder.Entity<Role>().ToTable("Roles");
 

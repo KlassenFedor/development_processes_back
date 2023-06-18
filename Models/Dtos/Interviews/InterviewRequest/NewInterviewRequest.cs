@@ -7,6 +7,6 @@ namespace dev_processes_backend.Models.Dtos.Interviews.InterviewRequest
         public string? Description { get; set; }
         public Guid VacancyId { get; set; }
         public Guid? StudentId { get; set; }
-        public InterviewState? InterviewState { get; set; }
+        public InterviewStateRequest? InterviewState { get; set; }
     }
 }

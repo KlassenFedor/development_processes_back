@@ -136,4 +136,26 @@ public class InterviewsController : BaseController
             return BadRequest("Unable to get all interviews");
         }
     }
+
+    /// <summary>
+    /// Returns a list of vacancy interviews
+    /// </summary>
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpGet("vacancy/{vacancyId:guid}")]
+    public async Task<IActionResult> GetVacancyInterviews(Guid vacancyId)
+    {
+        try
+        {
+            var result = await _interviewsService.GetVacancyInterviews(vacancyId);
+            if (result == null)
+            {
+                throw new EntityNotFoundException();
+            }
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound(vacancyId);
+        }
+    }
 }

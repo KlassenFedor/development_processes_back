@@ -68,6 +68,35 @@ namespace dev_processes_backend.Controllers
             }
         }
 
+        [HttpGet("get/id")]
+        public async Task<IActionResult> GetId()
+        {
+            try
+            {
+                Guid? userId = null;
+                if (User.Identity != null)
+                {
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        try
+                        {
+                            userId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+                            return Ok(userId);
+                        }
+                        catch
+                        {
+                            return BadRequest("Can not find user id");
+                        }
+                    }
+                }
+                return Unauthorized("User not authorized");
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Unexpected error");
+            }
+        }
+
         [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
         [HttpPost("register/student")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentRequest model)

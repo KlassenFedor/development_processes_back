@@ -149,4 +149,22 @@ public class InterviewsService : BaseService
 
         return interviewId;
     }
+
+    public async Task<List<InterviewResponse>> GetAllInterviews()
+    {
+        var interviews = await ApplicationDbContext.Interviews
+            .Include(i => i.Vacancy)
+            .Include(i => i.Student)
+            .Select(i => new InterviewResponse
+            {
+                Id = i.Id,
+                Description = i.Description,
+                VacancyId = i.Vacancy.Id,
+                History = i.History,
+                StudentId = i.Student.Id
+            })
+            .ToListAsync();
+
+        return interviews;
+    }
 }

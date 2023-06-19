@@ -117,4 +117,23 @@ public class InterviewsController : BaseController
             return NotFound(id);
         }
     }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllInterviews()
+    {
+        try
+        {
+            var result = await _interviewsService.GetAllInterviews();
+            if (result == null)
+            {
+                throw new EntityNotFoundException();
+            }
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return BadRequest("Unable to get all interviews");
+        }
+    }
 }

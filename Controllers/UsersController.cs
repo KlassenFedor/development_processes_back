@@ -87,5 +87,62 @@ public class UsersController : BaseController
             return NotFound();
         }
     }
-    
+
+    [Authorize]
+    [HttpGet("self_info")]
+    public async Task<IActionResult> GetSelfInformation()
+    {
+        try
+        {
+            Guid? userId = null;
+            if (User.Identity != null)
+            {
+                try
+                {
+                    userId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+                    var result = await _usersService.GetUserInformation(userId);
+                    return Ok(result);
+                }
+                catch
+                {
+                    return BadRequest("Can not find user id");
+                }
+            }
+            return BadRequest("User not authorized");
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Unable to get information");
+        }
+    }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator)]
+    [HttpGet("admin_info")]
+    public async Task<IActionResult> GetAdminInformation(Guid adminId)
+    {
+        try
+        {
+            var result = await _usersService.GetAdminInformation(adminId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Unable to get information");
+        }
+    }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpGet("student_info")]
+    public async Task<IActionResult> GetStudentInformation(Guid studentId)
+    {
+        try
+        {
+            var result = await _usersService.GetStudentInformation(studentId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Unable to get information");
+        }
+    }
 }

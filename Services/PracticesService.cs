@@ -54,4 +54,6 @@ public class PracticesService : BaseService
         ApplicationDbContext.Practices.Update(practice);
         await ApplicationDbContext.SaveChangesAsync();
     }
+
+
 }

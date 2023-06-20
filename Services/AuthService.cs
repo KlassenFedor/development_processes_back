@@ -143,5 +143,19 @@ namespace dev_processes_backend.Services
             }
             return user.Id;
         }
+
+        public async Task ChangePassword(Guid? userId, string newPassword, string currentPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new EntityNotFoundException();
+            }
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                throw new Exception();
+            }
+        }
     }
 }

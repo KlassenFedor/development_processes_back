@@ -1,13 +1,18 @@
 ﻿using dev_processes_backend.Exceptions;
 using dev_processes_backend.Models;
 using dev_processes_backend.Models.Dtos.Users.ResponseModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace dev_processes_backend.Services;
 
 public class UsersService : BaseService
 {
-    public UsersService(IServiceProvider serviceProvider) : base(serviceProvider) { }
+    private readonly UserManager<User> _userManager;
+    public UsersService(IServiceProvider serviceProvider, UserManager<User> userManager) : base(serviceProvider)
+    {
+        _userManager = userManager;
+    }
 
     public async Task BlockAdminAsync(Guid? id)
     {
@@ -118,5 +123,65 @@ public class UsersService : BaseService
 
         ApplicationDbContext.Users.Remove(user);
         await ApplicationDbContext.SaveChangesAsync();
+    }
+
+    public async Task<UserInfoResponse> GetUserInformation(Guid? userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        return new UserInfoResponse
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email
+        };
+    }
+
+    public async Task<UserInfoResponse> GetAdminInformation(Guid? userId)
+    {
+        var users = await _userManager.GetUsersInRoleAsync(RolesNames.Administartor);
+        User administrator = null;
+        foreach (var user in users)
+        {
+            if (user.Id == userId)
+            {
+                administrator = user;
+            }
+        }
+        if (administrator == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        return new UserInfoResponse
+        {
+            FirstName = administrator.FirstName,
+            LastName = administrator.LastName,
+            Email = administrator.Email
+        };
+    }
+
+    public async Task<UserInfoResponse> GetStudentInformation(Guid? userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        if (
+            await _userManager.IsInRoleAsync(user, RolesNames.Administartor) ||
+            await _userManager.IsInRoleAsync(user, RolesNames.SuperAdministrator)
+            )
+        {
+            throw new EntityNotFoundException();
+        }
+        return new UserInfoResponse
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email
+        };
     }
 }

@@ -141,5 +141,36 @@ namespace dev_processes_backend.Controllers
         {
             await _authService.Logout();
         }
+
+        [Authorize]
+        [HttpPost("change_password")]
+        public async Task<IActionResult> ChangePassword(string newPassword, string currentPassword)
+        {
+            try
+            {
+                Guid? userId = null;
+                if (User.Identity != null)
+                {
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        try
+                        {
+                            userId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+                            await _authService.ChangePassword(userId, newPassword, currentPassword);
+                            return Ok();
+                        }
+                        catch
+                        {
+                            return BadRequest("Unable to change password");
+                        }
+                    }
+                }
+                return BadRequest("User not authorized");
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Unable to change password");
+            }
+        }
     }
 }

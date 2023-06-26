@@ -8,8 +8,8 @@ public class Practice
     public int Course { get; set; }
     public int CharacterizationMark { get; set; }
     
-    public Guid PracticeDiaryId { get; set; }
-    public File PracticeDiary { get; set; }
-    public Guid CharacterizationFileId { get; set; }
-    public File CharacterizationFile { get; set; }
+    public Guid? PracticeDiaryId { get; set; }
+    public File? PracticeDiary { get; set; }
+    public Guid? CharacterizationFileId { get; set; }
+    public File? CharacterizationFile { get; set; }
 }

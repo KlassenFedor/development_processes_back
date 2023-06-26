@@ -49,4 +49,80 @@ public class PracticesController : BaseController
             return BadRequest();
         }
     }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpPost("{userId:guid}/add_practice")]
+    public async Task<IActionResult> AddPractice(Guid? userId, [FromBody] AddPracticeRequest model)
+    {
+        try
+        {
+            var result = await _practicesService.AddPractice(userId, model);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest();
+        }
+    }
+
+    [Authorize]
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetPractice(Guid? id)
+    {
+        try
+        {
+            var result = await _practicesService.GetPractice(id);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest();
+        }
+    }
+
+    [Authorize]
+    [HttpPost("{practiceId:guid}/add_practice_diary")]
+    public async Task<IActionResult> AddPracticeDiary(Guid? practiceId, [FromForm] AddPracticeDiaryRequest model)
+    {
+        try
+        {
+            await _practicesService.AddPracticeDiary(practiceId, model);
+            return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest();
+        }
+    }
+
+    [Authorize]
+    [HttpGet("{userId:guid}/all_practices")]
+    public async Task<IActionResult> GetAllPractices(Guid? userId)
+    {
+        try
+        {
+            var result = await _practicesService.GetStudentPractices(userId);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest();
+        }
+    }
 }

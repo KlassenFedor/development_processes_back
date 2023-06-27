@@ -134,6 +134,7 @@ public class UsersService : BaseService
         }
         return new UserInfoResponse
         {
+            Patronymic = user.Patronymic,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email
@@ -157,6 +158,7 @@ public class UsersService : BaseService
         }
         return new UserInfoResponse
         {
+            Patronymic = administrator.Patronymic,
             FirstName = administrator.FirstName,
             LastName = administrator.LastName,
             Email = administrator.Email
@@ -179,6 +181,7 @@ public class UsersService : BaseService
         }
         return new UserInfoResponse
         {
+            Patronymic = user.Patronymic,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email

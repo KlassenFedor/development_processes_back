@@ -166,4 +166,31 @@ public class VacanciesService : BaseService
         student.VacancyPriorities.Remove(vacancyPriority);
         await ApplicationDbContext.SaveChangesAsync();
     }
+
+    public async Task<List<GetVacanciesElementResponseModel>> GetCompanyVacancies(Guid? companyId)
+    {
+        if (companyId == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var company = await ApplicationDbContext.Companies.Include(c => c.Vacancies).FirstOrDefaultAsync(c => c.Id == companyId);
+        if (company == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var result = company.Vacancies.Select(v => new GetVacanciesElementResponseModel
+        {
+            Id = v.Id,
+            CompanyId = v.Company.Id,
+            CompanyName = v.Company.Name,
+            Stack = v.Stack,
+            Description = v.Description,
+            EstimatedNumberToHire = v.EstimatedNumberToHire,
+            AppliableForDateStart = v.AppliableForDateStart,
+            AppliableForDateEnd = v.AppliableForDateEnd,
+            Position = v.Position
+        }).ToList();
+
+        return result;
+    }
 }

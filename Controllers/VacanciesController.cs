@@ -134,4 +134,19 @@ public class VacanciesController : BaseController
             return NotFound();
         }
     }
+
+    [Authorize]
+    [HttpGet("company/{companyId:guid}")]
+    public async Task<IActionResult> GetCompanyVacancies(Guid? companyId)
+    {
+        try
+        {
+            var result = await _vacanciesService.GetCompanyVacancies(companyId);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

@@ -91,7 +91,7 @@ public class VacanciesController : BaseController
     }
 
     [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
-    [HttpPost("addVacancy/student/{studentId:guid}/vacancy/{vacancyId:guid}")]
+    [HttpPost("add_vacancy/student/{studentId:guid}/vacancy/{vacancyId:guid}")]
     public async Task<IActionResult> AddVacancyToStudentList(Guid studentId, Guid vacancyId)
     {
         try

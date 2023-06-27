@@ -17,7 +17,7 @@ namespace dev_processes_backend.Controllers
             _vacanciesPrioritiesService = serviceProvider.GetRequiredService<VacanciesPrioritiesService>();
         }
 
-        [HttpPost("changePriorities/student/{studentId:guid}")]
+        [HttpPost("change_priorities/student/{studentId:guid}")]
         public async Task<IActionResult> ChangePriorities(Guid studentId, [FromBody] List<ChangeVacanciyPriorityRequest> newVacanciesPriorities)
         {
             try

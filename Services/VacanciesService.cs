@@ -118,7 +118,7 @@ public class VacanciesService : BaseService
         return result;
     }
 
-    public async Task<List<GetVacanciesElementResponseModel>> GetStudentVacancies(Guid? studentId)
+    public async Task<List<GetVacanciesWithVacancyPriorityElementResponseModel>> GetStudentVacancies(Guid? studentId)
     {
         if (studentId == null)
         {
@@ -127,9 +127,10 @@ public class VacanciesService : BaseService
         var student = await ApplicationDbContext.Students.Include(s => s.VacancyPriorities).ThenInclude(vp => vp.Vacancy).ThenInclude(v => v.Company).FirstOrDefaultAsync(s => s.Id == studentId);
         var vacanciesIds = student.VacancyPriorities.ToList().Select(vp => vp.Vacancy).Select(v => v.Id);
         var vacancies = ApplicationDbContext.Vacancies.Where(v => vacanciesIds.Contains(v.Id)).ToList()
-            .Select(v => new GetVacanciesElementResponseModel
+            .Select(v => new GetVacanciesWithVacancyPriorityElementResponseModel
             {
                 Id = v.Id,
+                VacancyPriorityId = student.VacancyPriorities.Where(vp => vp.Vacancy.Id == v.Id).FirstOrDefault().Id,
                 CompanyId = v.Company.Id,
                 Stack = v.Stack,
                 Description = v.Description,

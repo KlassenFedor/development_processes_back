@@ -136,6 +136,7 @@ public class UsersService : BaseService
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Patronymic = user.Patronymic,
             Email = user.Email
         };
     }
@@ -159,6 +160,7 @@ public class UsersService : BaseService
         {
             FirstName = administrator.FirstName,
             LastName = administrator.LastName,
+            Patronymic = administrator.Patronymic,
             Email = administrator.Email
         };
     }
@@ -181,6 +183,7 @@ public class UsersService : BaseService
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Patronymic = user.Patronymic,
             Email = user.Email
         };
     }

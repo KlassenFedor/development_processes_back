@@ -8,7 +8,6 @@ using System.Diagnostics;
 
 namespace dev_processes_backend.Controllers;
 
-[Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
 public class VacanciesController : BaseController
 {
     private readonly VacanciesService _vacanciesService;
@@ -19,7 +18,8 @@ public class VacanciesController : BaseController
         _vacanciesService = serviceProvider.GetRequiredService<VacanciesService>();
         _vacanciesPrioritiesService = serviceProvider.GetRequiredService<VacanciesPrioritiesService>();
     }
-    
+
+    [Authorize]    
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -31,6 +31,7 @@ public class VacanciesController : BaseController
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateVacancyRequestModel model)
     {   
@@ -54,6 +55,7 @@ public class VacanciesController : BaseController
     /// Требуется дата в формате 2012-04-23T18:25:43.511Z. Позиция задается цифрой в енаме
     /// </summary>
     /// <returns></returns>
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Edit(Guid? id, [FromBody] EditVacancyRequestModel model)
     {
@@ -73,6 +75,7 @@ public class VacanciesController : BaseController
         }
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid? id)
     {
@@ -87,6 +90,7 @@ public class VacanciesController : BaseController
         }
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPost("addVacancy/student/{studentId:guid}/vacancy/{vacancyId:guid}")]
     public async Task<IActionResult> AddVacancyToStudentList(Guid studentId, Guid vacancyId)
     {

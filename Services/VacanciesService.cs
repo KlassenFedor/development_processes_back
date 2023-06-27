@@ -117,4 +117,48 @@ public class VacanciesService : BaseService
 
         return result;
     }
+
+    public async Task<List<GetVacanciesElementResponseModel>> GetStudentVacancies(Guid? studentId)
+    {
+        if (studentId == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var student = await ApplicationDbContext.Students.Include(s => s.VacancyPriorities).ThenInclude(vp => vp.Vacancy).ThenInclude(v => v.Company).FirstOrDefaultAsync(s => s.Id == studentId);
+        var vacanciesIds = student.VacancyPriorities.ToList().Select(vp => vp.Vacancy).Select(v => v.Id);
+        var vacancies = ApplicationDbContext.Vacancies.Where(v => vacanciesIds.Contains(v.Id)).ToList()
+            .Select(v => new GetVacanciesElementResponseModel
+            {
+                Id = v.Id,
+                CompanyId = v.Company.Id,
+                Stack = v.Stack,
+                Description = v.Description,
+                EstimatedNumberToHire = v.EstimatedNumberToHire,
+                AppliableForDateStart = v.AppliableForDateStart,
+                AppliableForDateEnd = v.AppliableForDateEnd,
+                Position = v.Position
+            }).ToList();
+
+        return vacancies;
+    }
+
+    public async Task DeleteStudentVacancy(Guid? studentId, Guid? vacancyId)
+    {
+        if (studentId == null || vacancyId == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var student = await ApplicationDbContext.Students.Include(s => s.VacancyPriorities).ThenInclude(vp => vp.Vacancy).FirstOrDefaultAsync(s => s.Id == studentId);
+        if (student == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var vacancyPriority = student.VacancyPriorities.Where(vp => vp.Vacancy.Id == vacancyId).FirstOrDefault();
+        if (vacancyPriority == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        student.VacancyPriorities.Remove(vacancyPriority);
+        await ApplicationDbContext.SaveChangesAsync();
+    }
 }

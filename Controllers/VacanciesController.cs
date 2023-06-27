@@ -104,4 +104,34 @@ public class VacanciesController : BaseController
             return BadRequest("Unable to add vacancy to students list");
         }
     }
+
+    [Authorize]
+    [HttpGet("student/{studentId:guid}")]
+    public async Task<IActionResult> GetStudentVacancies(Guid? studentId)
+    {
+        try
+        {
+            var result = await _vacanciesService.GetStudentVacancies(studentId);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("student/{studentId:guid}/vacancy/{vacancyId:guid}")]
+    public async Task<IActionResult> GetStudentVacancies(Guid? studentId, Guid? vacancyId)
+    {
+        try
+        {
+            await _vacanciesService.DeleteStudentVacancy(studentId, vacancyId);
+            return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

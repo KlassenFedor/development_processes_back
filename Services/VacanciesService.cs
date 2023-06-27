@@ -20,6 +20,7 @@ public class VacanciesService : BaseService
             {
                 Id = v.Id,
                 CompanyId = v.Company.Id,
+                CompanyName = v.Company.Name,
                 Stack = v.Stack,
                 Description = v.Description,
                 EstimatedNumberToHire = v.EstimatedNumberToHire,
@@ -107,6 +108,7 @@ public class VacanciesService : BaseService
             {
                 Id = v.Id,
                 CompanyId = v.Company.Id,
+                CompanyName = v.Company.Name,
                 Stack = v.Stack,
                 Description = v.Description,
                 EstimatedNumberToHire = v.EstimatedNumberToHire,
@@ -131,6 +133,7 @@ public class VacanciesService : BaseService
             {
                 Id = v.Id,
                 CompanyId = v.Company.Id,
+                CompanyName = v.Company.Name,
                 Stack = v.Stack,
                 Description = v.Description,
                 EstimatedNumberToHire = v.EstimatedNumberToHire,

@@ -4,6 +4,7 @@ public class GetVacanciesElementResponseModel
 {
     public Guid Id { get; set; }
     public Guid CompanyId { get; set; }
+    public string? CompanyName { get; set; }
     public string Stack { get; set; }
     public string Description { get; set; }
     public string EstimatedNumberToHire { get; set; }

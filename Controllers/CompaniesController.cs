@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dev_processes_backend.Controllers;
 
-[Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
 public class CompaniesController : BaseController
 {
     private readonly CompaniesService _companiesService;
@@ -16,13 +15,15 @@ public class CompaniesController : BaseController
     {
         _companiesService = serviceProvider.GetRequiredService<CompaniesService>();
     }
-    
+
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         return Ok(await _companiesService.GetCompaniesAsync());
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCompanyRequestModel model)
     {   
@@ -35,6 +36,7 @@ public class CompaniesController : BaseController
         return CreatedAtRoute(null, response);
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Edit(Guid? id, [FromBody] EditCompanyRequestModel model)
     {
@@ -54,6 +56,7 @@ public class CompaniesController : BaseController
         }
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid? id)
     {
@@ -74,6 +77,7 @@ public class CompaniesController : BaseController
     /// <param name="companyId"></param>
     /// <param name="model"></param>
     /// <returns></returns>
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPut("{companyId:guid}/logo")]
     public async Task<IActionResult> UploadLogo(Guid? companyId, [FromForm] UploadLogoRequestModel model)
     {

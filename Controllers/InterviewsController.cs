@@ -32,6 +32,21 @@ public class InterviewsController : BaseController
         }
     }
 
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpPatch("{id:guid}/confirm_employment")]
+    public async Task<IActionResult> ConfirmEmployment(Guid? id)
+    {
+        try
+        {
+            await _interviewsService.ConfirmEmployment(id);
+            return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateInterview(NewInterviewRequest newInterviewRequest)

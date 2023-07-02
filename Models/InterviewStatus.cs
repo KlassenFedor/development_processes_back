@@ -5,5 +5,6 @@ public enum InterviewStatus
     Appointed,
     Rejected,
     OfferReceived,
-    OfferConfirmed
+    OfferConfirmed,
+    Employed
 }

@@ -37,6 +37,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 
 using var serviceScope = app.Services.CreateScope();

@@ -39,6 +39,31 @@ public class InterviewsService : BaseService
         await ApplicationDbContext.SaveChangesAsync();
     }
 
+    public async Task ConfirmEmployment(Guid? id)
+    {
+        if (id == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var interview = await ApplicationDbContext.Interviews
+            .Include(i => i.History)
+            .FirstOrDefaultAsync(i => i.Id == id);
+        if (interview == null)
+        {
+            throw new EntityNotFoundException();
+        }
+
+        interview.History.Add(new InterviewState
+        {
+            Id = new Guid(),
+            DateTime = DateTime.Now,
+            Status = InterviewStatus.Employed
+        });
+
+        ApplicationDbContext.Interviews.Update(interview);
+        await ApplicationDbContext.SaveChangesAsync();
+    }
+
     public async Task<Guid> CreateInterview(NewInterviewRequest newInterviewRequest)
     {
         var newInterview = new Interview();

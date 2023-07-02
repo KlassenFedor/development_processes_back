@@ -41,12 +41,18 @@ public class DownloadableDocumentsController : BaseController
     [HttpGet("practice_diary_template")]
     public IActionResult GetPracticeDiaryTemplate()
     {
-        return Ok(_downloadableDocumentsService.DownloadPracticeDiaryTemplate());
+        string file_path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "practiceDiaryTemplate.pdf");
+        string file_type = "application/pdf";
+        string file_name = "practiceDiarytemplate.pdf";
+        return PhysicalFile(file_path, file_type, file_name);
     }
 
     [HttpGet("practice_order")]
     public IActionResult GetPracticeOrderte()
     {
-        return Ok(_downloadableDocumentsService.DownloadPracticeOrder());
+        string file_path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "practiceOrder.pdf");
+        string file_type = "application/pdf";
+        string file_name = "practiceOrder.pdf";
+        return PhysicalFile(file_path, file_type, file_name);
     }
 }

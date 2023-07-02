@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Data\NewFolder\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

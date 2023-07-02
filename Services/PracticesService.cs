@@ -71,12 +71,19 @@ public class PracticesService : BaseService
             Debug.WriteLine("student not found");
             throw new EntityNotFoundException();
         }
+        var company = await ApplicationDbContext.Companies.FirstOrDefaultAsync(c => c.Id == practiceRequest.CompanyId);
+        if (company == null)
+        {
+            throw new EntityNotFoundException();
+        }
         Practice practice = new Practice
         {
             DateStart = practiceRequest.DateStart,
             DateEnd = practiceRequest.DateEnd,
             Course = practiceRequest.Course,
-            CharacterizationMark = 1
+            CharacterizationMark = 1,
+            Position = (Position)practiceRequest.Position,
+            Company = company
         };
         student.Practices.Add(practice);
         await ApplicationDbContext.SaveChangesAsync();
@@ -93,6 +100,7 @@ public class PracticesService : BaseService
         var practice = await ApplicationDbContext.Practices
             .Include(p => p.PracticeDiary)
             .Include(p => p.CharacterizationFile)
+            .Include(p => p.Company)
             .FirstOrDefaultAsync(p => p.Id == practiceId);
         if (practice == null)
         {
@@ -105,6 +113,8 @@ public class PracticesService : BaseService
             DateEnd = practice.DateEnd,
             Course = practice.Course,
             CharacterizationMark = practice.CharacterizationMark,
+            Position = (int)practice.Position,
+            CompanyId = practice.Company.Id,
             PracticeDiary = practice.PracticeDiary,
             CharacterizationFile = practice.CharacterizationFile
         };
@@ -148,7 +158,9 @@ public class PracticesService : BaseService
             DateStart = p.DateStart,
             DateEnd = p.DateEnd,
             Course = p.Course,
-            CharacterizationMark = p.CharacterizationMark
+            CharacterizationMark = p.CharacterizationMark,
+            Position = (int)p.Position,
+            CompanyId = p.Company.Id,
         }).ToList();
     }
 }

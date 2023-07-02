@@ -218,47 +218,13 @@ namespace dev_processes_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Practices",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DateStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DateEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Course = table.Column<int>(type: "integer", nullable: false),
-                    CharacterizationMark = table.Column<int>(type: "integer", nullable: false),
-                    PracticeDiaryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CharacterizationFileId = table.Column<Guid>(type: "uuid", nullable: false),
-                    StudentId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Practices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Practices_Files_CharacterizationFileId",
-                        column: x => x.CharacterizationFileId,
-                        principalTable: "Files",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Practices_Files_PracticeDiaryId",
-                        column: x => x.PracticeDiaryId,
-                        principalTable: "Files",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Practices_Users_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -279,6 +245,49 @@ namespace dev_processes_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Practices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Course = table.Column<int>(type: "integer", nullable: false),
+                    CharacterizationMark = table.Column<int>(type: "integer", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Position = table.Column<int>(type: "integer", nullable: false),
+                    PracticeDiaryId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CharacterizationFileId = table.Column<Guid>(type: "uuid", nullable: true),
+                    StudentId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Practices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Practices_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Practices_Files_CharacterizationFileId",
+                        column: x => x.CharacterizationFileId,
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Practices_Files_PracticeDiaryId",
+                        column: x => x.PracticeDiaryId,
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Practices_Users_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vacancies",
                 columns: table => new
                 {
@@ -286,10 +295,11 @@ namespace dev_processes_backend.Migrations
                     Stack = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     EstimatedNumberToHire = table.Column<string>(type: "text", nullable: false),
-                    AppliableForDateStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AppliableForDateEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AppliableForDateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AppliableForDateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Position = table.Column<int>(type: "integer", nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -359,7 +369,7 @@ namespace dev_processes_backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     InterviewId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -424,6 +434,11 @@ namespace dev_processes_backend.Migrations
                 table: "Practices",
                 column: "CharacterizationFileId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Practices_CompanyId",
+                table: "Practices",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Practices_PracticeDiaryId",

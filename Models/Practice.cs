@@ -7,6 +7,9 @@ public class Practice
     public DateTime DateEnd { get; set; }
     public int Course { get; set; }
     public int CharacterizationMark { get; set; }
+    public Guid CompanyId { get; set; }
+    public Company Company { get; set; }
+    public Position Position { get; set; }
     
     public Guid? PracticeDiaryId { get; set; }
     public File? PracticeDiary { get; set; }

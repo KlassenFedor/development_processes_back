@@ -6,5 +6,7 @@
         public DateTime DateEnd { get; set; }
         public int Course { get; set; }
         public int? CharacterizationMark { get; set; }
+        public Guid CompanyId { get; set; }
+        public int Position { get; set; }
     }
 }

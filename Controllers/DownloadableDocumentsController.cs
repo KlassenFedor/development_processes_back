@@ -37,4 +37,16 @@ public class DownloadableDocumentsController : BaseController
         await _downloadableDocumentsService.UploadPracticeOrderAsync(model);
         return Ok();
     }
+
+    [HttpGet("practice_diary_template")]
+    public IActionResult GetPracticeDiaryTemplate()
+    {
+        return Ok(_downloadableDocumentsService.DownloadPracticeDiaryTemplate());
+    }
+
+    [HttpGet("practice_order")]
+    public IActionResult GetPracticeOrderte()
+    {
+        return Ok(_downloadableDocumentsService.DownloadPracticeOrder());
+    }
 }

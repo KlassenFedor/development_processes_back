@@ -12,8 +12,8 @@ using dev_processes_backend.Data;
 namespace dev_processes_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230626115358_PracticeFieldsUpdate")]
-    partial class PracticeFieldsUpdate
+    [Migration("20230702194009_AllEntities")]
+    partial class AllEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,7 +196,7 @@ namespace dev_processes_backend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("DateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("InterviewId")
                         .HasColumnType("uuid");
@@ -223,14 +223,20 @@ namespace dev_processes_backend.Migrations
                     b.Property<int>("CharacterizationMark")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Course")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("PracticeDiaryId")
                         .HasColumnType("uuid");
@@ -242,6 +248,8 @@ namespace dev_processes_backend.Migrations
 
                     b.HasIndex("CharacterizationFileId")
                         .IsUnique();
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("PracticeDiaryId")
                         .IsUnique();
@@ -425,7 +433,7 @@ namespace dev_processes_backend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -447,16 +455,16 @@ namespace dev_processes_backend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("AppliableForDateEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("AppliableForDateStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -603,6 +611,12 @@ namespace dev_processes_backend.Migrations
                         .HasForeignKey("dev_processes_backend.Models.Practice", "CharacterizationFileId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("dev_processes_backend.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dev_processes_backend.Models.File", "PracticeDiary")
                         .WithOne()
                         .HasForeignKey("dev_processes_backend.Models.Practice", "PracticeDiaryId")
@@ -613,6 +627,8 @@ namespace dev_processes_backend.Migrations
                         .HasForeignKey("StudentId");
 
                     b.Navigation("CharacterizationFile");
+
+                    b.Navigation("Company");
 
                     b.Navigation("PracticeDiary");
                 });

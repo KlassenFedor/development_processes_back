@@ -77,6 +77,49 @@ namespace dev_processes_backend.Services
             }
         }
 
+        public async Task<bool> CheckIfTheSameUserOrAdmin(ClaimsPrincipal claimsPrincipal, Guid id)
+        {
+            Guid? userId = null;
+            if (claimsPrincipal.Identity != null)
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+                    try
+                    {
+                        userId = Guid.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+                        if (userId == null) 
+                        {
+                            throw new EntityNotFoundException();
+                        }
+                    }
+                    catch
+                    {
+                        throw new EntityNotFoundException();
+                    }
+                }
+                else
+                {
+                    throw new EntityNotFoundException();
+                }
+            }
+            else
+            {
+                throw new EntityNotFoundException();
+            }
+
+            if (userId == id)
+            {
+                return true;
+            }
+            var userRole = await GetUserRole(userId);
+            if (userRole.ToList()[0] == RolesNames.Administartor || userRole.ToList()[0] == RolesNames.SuperAdministrator)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private async Task Register(RegisterRequest model)
         {
             var user = new User

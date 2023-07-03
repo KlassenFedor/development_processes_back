@@ -109,6 +109,7 @@ public class PracticesService : BaseService
 
         return new GetPracticeResponse
         {
+            Id = practice.Id,
             DateStart = practice.DateStart,
             DateEnd = practice.DateEnd,
             Course = practice.Course,
@@ -155,6 +156,7 @@ public class PracticesService : BaseService
 
         return practices.Select(p => new GetPracticeShortResponse
         {
+            Id = p.Id,
             DateStart = p.DateStart,
             DateEnd = p.DateEnd,
             Course = p.Course,

@@ -6,5 +6,5 @@ public class GetCompaniesElementResponseModel
     public string Name { get; set; }
     public string Site { get; set; }
     public string Information { get; set; }
-    public string LogoUrl { get; set; }
+    public string? LogoUrl { get; set; }
 }

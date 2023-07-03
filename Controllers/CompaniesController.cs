@@ -91,4 +91,19 @@ public class CompaniesController : BaseController
             return NotFound();
         }
     }
+
+    [Authorize]
+    [HttpGet("{companyId:guid}")]
+    public async Task<IActionResult> GetCompanyo(Guid? companyId)
+    {
+        try
+        {
+            var result = await _companiesService.GetCompanyAsync(companyId);
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

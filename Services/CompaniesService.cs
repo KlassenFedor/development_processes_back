@@ -97,4 +97,25 @@ public class CompaniesService : BaseService
         company.Logo = file;
         await ApplicationDbContext.SaveChangesAsync();
     }
+
+    public async Task<GetCompaniesElementResponseModel> GetCompanyAsync(Guid? companyId)
+    {
+        if (companyId == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        var company = await ApplicationDbContext.Companies.Include(c => c.Logo).FirstOrDefaultAsync(c => c.Id == companyId);
+        if (company == null)
+        {
+            throw new EntityNotFoundException();
+        }
+        return new GetCompaniesElementResponseModel
+        {
+            Id = company.Id,
+            Name = company.Name,
+            Site = company.Site,
+            Information = company.Information,
+            LogoUrl = company.Logo == null ? null : company.Logo.Path
+        };
+    }
 }

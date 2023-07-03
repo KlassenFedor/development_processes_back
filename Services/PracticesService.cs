@@ -146,7 +146,7 @@ public class PracticesService : BaseService
         {
             throw new EntityNotFoundException();
         }
-        var student = await ApplicationDbContext.Students.Include(s => s.Practices).FirstOrDefaultAsync(s => s.Id == userId);
+        var student = await ApplicationDbContext.Students.Include(s => s.Practices).ThenInclude(p => p.Company).FirstOrDefaultAsync(s => s.Id == userId);
         if (student == null)
         {
             throw new EntityNotFoundException();

@@ -127,6 +127,10 @@ public class VacanciesService : BaseService
             throw new EntityNotFoundException();
         }
         var student = await ApplicationDbContext.Students.Include(s => s.VacancyPriorities).ThenInclude(vp => vp.Vacancy).ThenInclude(v => v.Company).FirstOrDefaultAsync(s => s.Id == studentId);
+        if (student == null)
+        {
+            throw new EntityNotFoundException();
+        }
         var vacanciesIds = student.VacancyPriorities.ToList().Select(vp => vp.Vacancy).Select(v => v.Id);
         var vacancies = ApplicationDbContext.Vacancies.Where(v => vacanciesIds.Contains(v.Id)).ToList()
             .Select(v => new GetVacanciesWithVacancyPriorityElementResponseModel

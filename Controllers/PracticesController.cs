@@ -10,12 +10,12 @@ namespace dev_processes_backend.Controllers;
 public class PracticesController : BaseController
 {
     private readonly PracticesService _practicesService;
-    
+
     public PracticesController(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _practicesService = serviceProvider.GetRequiredService<PracticesService>();
     }
-    
+
     [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPost("{id:guid}/characterization")]
     public async Task<IActionResult> Characterization(Guid? id, AddPracticeCharacterizationRequestModel model)
@@ -30,7 +30,7 @@ public class PracticesController : BaseController
             return NotFound();
         }
     }
-    
+
     [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
     [HttpPatch("{id:guid}/characterization/{mark:int}")]
     public async Task<IActionResult> Characterization(Guid? id, int mark)
@@ -50,7 +50,7 @@ public class PracticesController : BaseController
         }
     }
 
-    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [Authorize]
     [HttpPost("{userId:guid}/add_practice")]
     public async Task<IActionResult> AddPractice(Guid? userId, [FromBody] AddPracticeRequest model)
     {

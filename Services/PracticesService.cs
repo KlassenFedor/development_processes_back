@@ -165,4 +165,20 @@ public class PracticesService : BaseService
             CompanyId = p.Company.Id,
         }).ToList();
     }
+
+    public async Task<List<GetPracticeShortResponse>> GetAllPractices()
+    {
+        var practices = await ApplicationDbContext.Practices.Include(p => p.Company).ToListAsync();
+
+        return practices.Select(p => new GetPracticeShortResponse
+        {
+            Id = p.Id,
+            DateStart = p.DateStart,
+            DateEnd = p.DateEnd,
+            Course = p.Course,
+            CharacterizationMark = p.CharacterizationMark,
+            Position = (int)p.Position,
+            CompanyId = p.Company.Id,
+        }).ToList();
+    }
 }

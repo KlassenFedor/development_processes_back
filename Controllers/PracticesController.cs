@@ -125,4 +125,23 @@ public class PracticesController : BaseController
             return BadRequest();
         }
     }
+
+    [Authorize(Roles = RolesNames.SuperAdministrator + "," + RolesNames.Administartor)]
+    [HttpGet("all_practices")]
+    public async Task<IActionResult> GetAllPractices()
+    {
+        try
+        {
+            var result = await _practicesService.GetAllPractices();
+            return Ok(result);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest();
+        }
+    }
 }
